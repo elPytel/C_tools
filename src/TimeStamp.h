@@ -32,7 +32,9 @@ TimeStamp_t TimeStamp[TIME_STAMP_BUF_LEN];
 uint_fast8_t TimeStamp_index;
 
 // par. timer
-void TimeStamp_RESET() { TimeStamp_index = 0; }
+void TimeStamp_RESET() {
+    TimeStamp_index = 0;
+}
 
 HAL_StatusTypeDef TimeStamp_INIT(TIM_HandleTypeDef *htim) {
     TimeStamp_RESET();
@@ -46,19 +48,25 @@ HAL_StatusTypeDef TimeStamp_INIT(TIM_HandleTypeDef *htim) {
  * Decrement timestamp index
  * Prevent overflow of index by using TIME_STAMP_BUF_MASK
  */
-void index_decrement(uint8_t *index) { *index = (*index - 1) & TIME_STAMP_BUF_MASK; }
+void index_decrement(uint8_t *index) {
+    *index = (*index - 1) & TIME_STAMP_BUF_MASK;
+}
 
 /*
  * Increment timestamp index
  * Prevent overflow of index by using TIME_STAMP_BUF_MASK
  */
-void index_incement(uint8_t *index) { *index = (*index + 1) & TIME_STAMP_BUF_MASK; }
+void index_incement(uint8_t *index) {
+    *index = (*index + 1) & TIME_STAMP_BUF_MASK;
+}
 
 /*
  * Increment timestamp index
  * Prevent overflow of index by using TIME_STAMP_BUF_MASK
  */
-void TimeStamp_index_increment() { index_incement(&TimeStamp_index); }
+void TimeStamp_index_increment() {
+    index_incement(&TimeStamp_index);
+}
 
 /*
  * Nastaveni casoveho razitka
@@ -82,7 +90,9 @@ uint8_t TimeStamp_SET(uint8_t c) {
  *
  * Vraci index, na ktery bylo razitko ulozeno.
  */
-uint8_t TimeStamp_SET(char c) { return TimeStamp_SET((uint8_t)c); }
+uint8_t TimeStamp_SET(char c) {
+    return TimeStamp_SET((uint8_t)c);
+}
 
 /*
  * Nacteni casoveho razitka
@@ -105,13 +115,17 @@ uint32_t TimeStamp_GET(uint8_t c) {
  *
  * Vraci cas, kdy bylo razitko ulozeno.
  */
-uint32_t TimeStamp_GET(char c) { return TimeStamp_GET((uint8_t)c); }
+uint32_t TimeStamp_GET(char c) {
+    return TimeStamp_GET((uint8_t)c);
+}
 
 /*
  * Absolutni rozdil casu
  * Porovnava dva casy a vraci jejich rozdil.
  */
-uint32_t abs_diference(uint32_t a, uint32_t b) { return a > b ? a - b : b - a; }
+uint32_t abs_diference(uint32_t a, uint32_t b) {
+    return a > b ? a - b : b - a;
+}
 
 /*
  * Rozdil casu mezi dvema razitky
@@ -130,7 +144,9 @@ uint32_t TimeStamp_DIFF(uint8_t c1, uint8_t c2) {
  * c1 - prvni razitko
  * c2 - druhe razitko
  */
-uint32_t TimeStamp_DIFF(char c1, char c2) { return TimeStamp_DIFF((uint8_t)c1, (uint8_t)c2); }
+uint32_t TimeStamp_DIFF(char c1, char c2) {
+    return TimeStamp_DIFF((uint8_t)c1, (uint8_t)c2);
+}
 
 /*
  * Rozdil casu mezi dvema indexy
