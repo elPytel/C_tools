@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <stdio.h>
+
 #include "message.h"
 #include "tools.c"
 
@@ -7,7 +8,7 @@ void test_create_data_block_with_zero_data() {
     // prepare data
     DATA_TYPE data_type = CHAR;
     uint16_t data_size = 0;
-    
+
     // create data block
     Data_block* data_block = create_data_block(data_type, data_size, NULL);
 
@@ -46,7 +47,7 @@ void test_create_data_block_with_array_data() {
     // data - pointer to int
     int* data = (int*)malloc(data_size * sizeof(int));
     for (uint16_t i = 0; i < data_size; i++) {
-        data[i] = i*5;
+        data[i] = i * 5;
     }
 
     // create data block
@@ -112,7 +113,9 @@ void test_calculate_number_of_bytes() {
     size_t number_of_bytes = calculate_number_of_bytes(number_of_sections, data_blocks);
 
     // testing
-    size_t expected_number_of_bytes = sizeof(uint32_t) + sizeof(uint8_t) + sizeof(MSG_TYPE) + 3 * (sizeof(DATA_TYPE) + sizeof(uint16_t)) + sizeof(int) + sizeof(float) + sizeof(char);
+    size_t expected_number_of_bytes = sizeof(uint32_t) + sizeof(uint8_t) + sizeof(MSG_TYPE) +
+                                      3 * (sizeof(DATA_TYPE) + sizeof(uint16_t)) + sizeof(int) +
+                                      sizeof(float) + sizeof(char);
     assert(number_of_bytes == expected_number_of_bytes);
 
     // free memory

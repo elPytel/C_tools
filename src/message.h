@@ -2,15 +2,15 @@
  * By elPytel
  */
 
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 
-typedef enum { 
-    INT, 
-    FLOAT, 
-    CHAR 
+typedef enum {
+    INT,
+    FLOAT,
+    CHAR
 } DATA_TYPE;
 
 /* Struktura datoveho bloku zpravy
@@ -25,10 +25,10 @@ typedef struct {
     void* data;
 } Data_block;
 
-typedef enum { 
-    LOGING_INFO, 
-    LOGING_WARNING, 
-    LOGING_ERROR 
+typedef enum {
+    LOGING_INFO,
+    LOGING_WARNING,
+    LOGING_ERROR
 } MSG_TYPE;
 
 /* Struktura zpravy

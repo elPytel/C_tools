@@ -37,8 +37,8 @@ void free_data_block(Data_block* data_block) {
 /* Calculate size of data type
  * Arguments:
  * - data_type - typ dat
- * 
- * Return: 
+ *
+ * Return:
  * - size_t - velikost datoveho typu
  */
 size_t data_type_size(DATA_TYPE data_type) {
@@ -58,8 +58,8 @@ size_t data_type_size(DATA_TYPE data_type) {
  * Arguments:
  * - number_of_sections - pocet polozek zpravy
  * - data_size* - velikosti jednotlivych dat
- * 
- * Return: 
+ *
+ * Return:
  * - size_t - velikost zpravy
  */
 size_t calculate_number_of_bytes(uint8_t number_of_sections, Data_block** data_block) {
@@ -106,7 +106,6 @@ void free_message(Message* msg) {
     msg = NULL;
 }
 
-
 Message* create_text_message(MSG_TYPE text_msg_type, char* text) {
     uint8_t number_of_sections = 1;
     Data_block** data = (Data_block**)malloc(number_of_sections * sizeof(Data_block*));
@@ -118,7 +117,7 @@ Message* create_text_message(MSG_TYPE text_msg_type, char* text) {
  * Arguments:
  * - msg1* - zprava
  * - msg2* - zprava
- * 
+ *
  * Return:
  * - bool - true, pokud jsou zpravy stejne, jinak false
  */
@@ -140,7 +139,10 @@ bool compare_messages(Message* msg1, Message* msg2) {
         if (msg1->data_block[i]->data_size != msg2->data_block[i]->data_size) {
             return false;
         }
-        if (memcmp(msg1->data_block[i]->data, msg2->data_block[i]->data, msg1->data_block[i]->data_size*data_type_size(msg1->data_block[i]->data_type)) != 0) {
+        void* data1 = msg1->data_block[i]->data;
+        void* data2 = msg2->data_block[i]->data;
+        size_t data_size = msg1->data_block[i]->data_size;
+        if (memcmp(data1, data2, data_size) != 0) {
             return false;
         }
     }
@@ -173,8 +175,11 @@ void serialize_message(Message* msg, uint8_t* buffer) {
         memcpy(buffer + offset, &data_block->data_size, sizeof(uint16_t));
         offset += sizeof(uint16_t);
         // data
-        memcpy(buffer + offset, data_block->data, data_block->data_size*data_type_size(data_block->data_type));
-        offset += data_block->data_size*data_type_size(data_block->data_type);
+        void* src = data_block->data;
+        void* dst = buffer + offset;
+        size_t size = data_block->data_size * data_type_size(data_block->data_type);
+        memcpy(dst, src, size);
+        offset += data_block->data_size * data_type_size(data_block->data_type);
     }
 }
 
@@ -210,9 +215,10 @@ Message* deserialize_message(uint8_t* buffer) {
         memcpy(&data_block->data_size, buffer + offset, sizeof(uint16_t));
         offset += sizeof(uint16_t);
         // data
-        data_block->data = (void*)malloc(data_block->data_size*data_type_size(data_block->data_type));
-        memcpy(data_block->data, buffer + offset, data_block->data_size*data_type_size(data_block->data_type));
-        offset += data_block->data_size*data_type_size(data_block->data_type);
+        size_t memory_size = data_block->data_size * data_type_size(data_block->data_type);
+        data_block->data = malloc(memory_size);
+        memcpy(data_block->data, buffer + offset, memory_size);
+        offset += data_block->data_size * data_type_size(data_block->data_type);
 
         // add data_block to message
         msg->data_block[i] = data_block;

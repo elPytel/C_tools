@@ -1,10 +1,12 @@
 #include <assert.h>
 #include <stdio.h>
+
 #include "message.h"
 #include "tools.c"
 
-Data_block ** prepare_data_blocks(uint8_t number_of_sections, DATA_TYPE data_type[], uint16_t data_size[], void* data[]) {
-    Data_block **data_blocks = (Data_block**)malloc(number_of_sections * sizeof(Data_block*));
+Data_block** prepare_data_blocks(uint8_t number_of_sections, DATA_TYPE data_type[],
+                                 uint16_t data_size[], void* data[]) {
+    Data_block** data_blocks = (Data_block**)malloc(number_of_sections * sizeof(Data_block*));
     for (uint8_t i = 0; i < number_of_sections; i++) {
         data_blocks[i] = create_data_block(data_type[i], data_size[i], data[i]);
     }
@@ -22,9 +24,9 @@ void test_create_message() {
     float* float_data = Float(3.14);
 
     // create data blocks
-    Data_block **data_blocks = (Data_block**)malloc(number_of_sections * sizeof(Data_block*));
+    Data_block** data_blocks = (Data_block**)malloc(number_of_sections * sizeof(Data_block*));
     for (uint8_t i = 0; i < number_of_sections; i++) {
-        void *data;
+        void* data;
         switch (data_type[i]) {
             case INT:
                 data = int_data;
@@ -38,7 +40,7 @@ void test_create_message() {
         }
         data_blocks[i] = create_data_block(data_type[i], data_size[i], data);
     }
-    
+
     Message* msg = create_message(number_of_sections, msg_type, data_blocks);
 
     // testing
@@ -76,7 +78,7 @@ void test_serialize_message() {
     void* data[] = {int_data, float_data};
 
     // create data blocks
-    Data_block **data_blocks = prepare_data_blocks(number_of_sections, data_type, data_size, data);
+    Data_block** data_blocks = prepare_data_blocks(number_of_sections, data_type, data_size, data);
 
     // create message
     Message* msg = create_message(number_of_sections, msg_type, data_blocks);
@@ -103,7 +105,7 @@ void test_serialize_deserialize_message() {
     void* data[] = {int_data, float_data};
 
     // create data blocks
-    Data_block **data_blocks = prepare_data_blocks(number_of_sections, data_type, data_size, data);
+    Data_block** data_blocks = prepare_data_blocks(number_of_sections, data_type, data_size, data);
 
     // create message
     Message* msg = create_message(number_of_sections, msg_type, data_blocks);
