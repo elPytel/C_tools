@@ -4,14 +4,19 @@
 #include "message.h"
 #include "tools.c"
 
+Data_block** alocate_array_of_data_blocks(uint8_t number_of_sections) {
+    return (Data_block**)malloc(number_of_sections * sizeof(Data_block*));
+}
+
 Data_block** prepare_data_blocks(uint8_t number_of_sections, DATA_TYPE data_type[],
                                  uint16_t data_size[], void* data[]) {
-    Data_block** data_blocks = (Data_block**)malloc(number_of_sections * sizeof(Data_block*));
+    Data_block** data_blocks = alocate_array_of_data_blocks(number_of_sections);
     for (uint8_t i = 0; i < number_of_sections; i++) {
         data_blocks[i] = create_data_block(data_type[i], data_size[i], data[i]);
     }
     return data_blocks;
 }
+
 
 void test_create_message() {
     // prepare data
@@ -24,7 +29,7 @@ void test_create_message() {
     float* float_data = Float(3.14);
 
     // create data blocks
-    Data_block** data_blocks = (Data_block**)malloc(number_of_sections * sizeof(Data_block*));
+    Data_block** data_blocks = alocate_array_of_data_blocks(number_of_sections);
     for (uint8_t i = 0; i < number_of_sections; i++) {
         void* data;
         switch (data_type[i]) {
@@ -126,6 +131,41 @@ void test_serialize_deserialize_message() {
     free_message(deserialized_msg);
 }
 
+void test_store_load_message() {
+    // prepare data
+    uint8_t number_of_sections = 2;
+    MSG_TYPE msg_type = LOGING_INFO;
+    DATA_TYPE data_type[] = {INT, FLOAT};
+    uint16_t data_size[] = {1, 1};
+    // data as pointers
+    int* int_data = Int(5);
+    float* float_data = Float(3.14);
+    void* data[] = {int_data, float_data};
+
+    // create data blocks
+    Data_block** data_blocks = prepare_data_blocks(number_of_sections, data_type, data_size, data);
+
+    // create message
+    Message* msg = create_message(number_of_sections, msg_type, data_blocks);
+
+    // store message
+    char* file_name = "test_message.bin";
+    store_message(msg, file_name);
+
+    // load message
+    Message* loaded_msg = load_message(file_name);
+
+    // testing
+    // compare number of bytes
+    assert(msg->number_of_bytes == loaded_msg->number_of_bytes);
+    // compare messages
+    assert(compare_messages(msg, loaded_msg));
+
+    // free memory
+    free_message(msg);
+    free_message(loaded_msg);
+}
+
 int main() {
     ///*
     test_create_message();
@@ -133,6 +173,7 @@ int main() {
     //*/
     test_serialize_message();
     test_serialize_deserialize_message();
+    test_store_load_message();
     printf("All tests of message passed!\n");
     return 0;
 }

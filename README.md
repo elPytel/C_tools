@@ -94,12 +94,24 @@ data_blocks[1] = data_block_float_array;
 Message* message = CreateMessage(number_of_sections, INT_AND_FLOAT_ARRAY, data_blocks);
 ```
 
-Toto vytvoří naší požadovanou zprávu. Pokud jí chceme odeslat, můžeme použít funkci pro serializaci zprávy.
+Toto vytvoří naší požadovanou zprávu. 
 
+## Serializace zprávy
+Pokud naší zprávu chceme odeslat, můžeme použít funkci pro serializaci zprávy.
+
+
+### Generický buffer
 ```C
 uint8_t* buffer[BUFFER_SIZE];
+bool valid = serialize_message_prealloc(message, buffer, BUFFER_SIZE);
+```
+
+Funkce `serialize_message_prealloc` zkontroluje, zda je buffer dostatečně velký pro serializaci zprávy. Pokud ano, zprávu serializuje a vrátí `true`, jinak vrátí `false` a do bufferu se nic nezapíše.
+
+### Alokace bufferu pro zprávu
+```C
+uint8_t* buffer = (uint8_t*)malloc(message->number_of_bytes);
 serialize_message(message, buffer) 
 ```
 
 Nyní máme zprávu serializovanou do pole bytů, které můžeme odeslat.
-

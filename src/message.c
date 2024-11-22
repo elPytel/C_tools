@@ -183,6 +183,23 @@ void serialize_message(Message* msg, uint8_t* buffer) {
     }
 }
 
+/* preallocated buffer for message
+ * Arguments:
+ * - msg* - zprava
+ * - buffer* - buffer pro serializaci
+ * - buffer_size - velikost bufferu
+ *
+ * Return:
+ * - false - pokud je buffer mensi nez velikost zpravy
+ */
+bool serialize_message_prealloc(Message* msg, uint8_t* buffer, size_t buffer_size) {
+    if (buffer_size < msg->number_of_bytes) {
+        return false;
+    }
+    serialize_message(msg, buffer);
+    return true;
+}
+
 /* deserialize message from Byte array
  * - buffer* - buffer pro deserializaci
  *
@@ -223,5 +240,45 @@ Message* deserialize_message(uint8_t* buffer) {
         // add data_block to message
         msg->data_block[i] = data_block;
     }
+    return msg;
+}
+
+/* Store message to binary file
+ * Arguments:
+ * - msg* - zprava
+ * - file_name - nazev souboru
+ */
+void store_message(Message* msg, char* file_name) {
+    FILE* file = fopen(file_name, "wb");
+    if (file == NULL) {
+        return;
+    }
+    uint8_t* buffer = (uint8_t*)malloc(msg->number_of_bytes);
+    serialize_message(msg, buffer);
+    fwrite(buffer, sizeof(uint8_t), msg->number_of_bytes, file);
+    free(buffer);
+    fclose(file);
+}
+
+/* Load message from binary file
+ * Arguments:
+ * - file_name - nazev souboru
+ *
+ * Return:
+ * - msg* - zprava
+ */
+Message* load_message(char* file_name) {
+    FILE* file = fopen(file_name, "rb");
+    if (file == NULL) {
+        return NULL;
+    }
+    fseek(file, 0, SEEK_END);
+    long file_size = ftell(file);
+    rewind(file);
+    uint8_t* buffer = (uint8_t*)malloc(file_size);
+    fread(buffer, sizeof(uint8_t), file_size, file);
+    fclose(file);
+    Message* msg = deserialize_message(buffer);
+    free(buffer);
     return msg;
 }

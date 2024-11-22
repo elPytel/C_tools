@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -I.
-EXT = .bin
+EXT = .out
 TARGET = test_message$(EXT)
 SRCS = test_message.c message.c
 TEST_SRCS = test_message.c test_data_block.c message.c

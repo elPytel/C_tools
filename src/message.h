@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 typedef enum {
     INT,
@@ -64,5 +65,9 @@ bool compare_messages(Message* msg1, Message* msg2);
 Message* create_text_message(MSG_TYPE text_msg_type, char* text);
 
 void serialize_message(Message* msg, uint8_t* buffer);
+bool serialize_message_prealloc(Message* msg, uint8_t* buffer, size_t buffer_size);
 
 Message* deserialize_message(uint8_t* buffer);
+
+void store_message(Message* msg, char* file_name);
+Message* load_message(char* file_name);
