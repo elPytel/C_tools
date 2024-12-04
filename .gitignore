@@ -4,6 +4,7 @@
 ### User ###
 *.zip
 src/*.bin
+*.bin
 
 ### C ###
 # Prerequisites
